@@ -24,6 +24,14 @@ message(STATUS "C Compiler ID: ${CMAKE_C_COMPILER_ID}")
 message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
 message(STATUS "CMAKE_LIBRARY_PATH: ${CMAKE_LIBRARY_PATH}")
 
+set(MINGW CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
+
+if (MINGW)
+    message(STATUS "--------MinGW--------")
+    set(WIN32 FALSE)
+    set(LINUX TRUE)
+endif()
+
 string(COMPARE EQUAL "${CMAKE_BUILD_TYPE}" "Release" DEFAULT_INSTALL_HEADERS)
 option(INSTALL_HEADERS "Install header files" ${DEFAULT_INSTALL_HEADERS})
 option(INSTALL_TOOLS "Install tools" OFF)
@@ -40,6 +48,10 @@ if(NOT CMAKE_SYSTEM_NAME STREQUAL Android)
     else()
         list(FILTER LIBBREAKPAD_SOURCES EXCLUDE REGEX
             "_unittest|_selftest|synth_minidump|/tests|/testdata|/mac|/windows|/android|/solaris|microdump_stackwalk|minidump_dump|minidump_stackwalk|disassembler_objdump.cc")
+        # if (MINGW)
+        #     list(FILTER LIBBREAKPAD_SOURCES EXCLUDE REGEX
+        #     "crash_generation_client.cc")
+        # endif()
     endif()
 
 
